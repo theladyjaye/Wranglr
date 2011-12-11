@@ -4,7 +4,6 @@ Wranglr.Canvas = function(id){
 	
 	var self = {}
 	var canvas = null
-	var context = null
 
 	function __new__(){
 	
@@ -12,8 +11,7 @@ Wranglr.Canvas = function(id){
 
 	function __init__(){
 		canvas = document.getElementById(id);
-		context = canvas.getContext('2d');
-		console.log(context)
+		self.context = canvas.getContext('2d');
 	}
 	
 	__new__();

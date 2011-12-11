@@ -16,6 +16,8 @@ Wranglr.Surface = function(){
 	}
 
 	function draw(){
+		canvas.context.fillStyle = "rgb(200,0,0)";
+        canvas.context.fillRect (10, 10, 55, 50);
 	}
 	
 	__new__();
