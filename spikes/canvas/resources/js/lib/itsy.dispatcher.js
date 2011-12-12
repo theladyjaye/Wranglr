@@ -1,5 +1,9 @@
 var itsy = itsy || {};
 
+/**
+ * @namespace itsy.Dispatcher
+ * @param {object} my used to 'extend' protected secrets between parent and children
+ */
 itsy.Dispatcher = function(my){
     var my     = my || {};
     var self   = {};       
@@ -12,9 +16,13 @@ itsy.Dispatcher = function(my){
         self.bubble    = bubble;
     }
     
+    /* initialization */
+
     function __init__(){
         self.name = 'itsy.Dispatcher';
     }
+
+    /* public methods */
 
     /**
      * @public
@@ -22,7 +30,7 @@ itsy.Dispatcher = function(my){
      * @description Adds a delegate to an event.
      * @param {string}   event    The event string or identifier.
      * @param {function} delegate The function to execute when the event is triggered.
-     * @param {object}   scope    The promised scope for the event delegate. (optional)
+     * @param {object}   scope    The promised scope for the event delegate. (required only if you need callback to be called from a specific scope)
      */
     function on(event, delegate, scope){
         events[event] = events[event] || {};
@@ -32,8 +40,9 @@ itsy.Dispatcher = function(my){
         
         // init event
         e.delegates = e.delegates || [];
+        e.scope     = scope;
+        
         e.delegates.push(delegate);
-        e.scope = scope;
     }
     /**
      * @public
@@ -45,10 +54,10 @@ itsy.Dispatcher = function(my){
      * @returns {boolean} Success
      */
     function off(event, delegate){
-        var e = events[event];
+        var e = events[event] || false;
 
         //if
-        if(e){
+        if(e !== false){
             var dels = e.delegates;
             // for
             for(var i=0, len=dels.length; i<len; i++){
@@ -83,12 +92,12 @@ itsy.Dispatcher = function(my){
     function dispatch(event, data){
         data = data || {};
         
-        var e = events[event];
+        var e = events[event] || false;
         
-        if(e){
-            var dels  = e.delegates,
-                scope = e.scope,
-                len   = dels.length;
+        if(e !== false){
+            var dels  = e.delegates;
+            var scope = e.scope;
+            var dlen   = dels.length;
             
             data.scope = scope;
 
@@ -111,7 +120,6 @@ itsy.Dispatcher = function(my){
      * @param  {object} target The new target for the bubbled event.
      *
      * @returns {undefined}
-     * @todo  needs testing
      */
     function bubble(event, data, target){
         data.oldTarget = data.target;
