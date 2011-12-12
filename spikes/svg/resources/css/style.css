@@ -1,4 +1,26 @@
+body{
+	margin:0;
+	padding:0;
+	background:#333;
+}
 
+header{
+	width:640px;
+	margin: 0 auto;
+	overflow:hidden;
+}
+header h1{
+	font-family: 'Ubuntu', sans-serif;
+	color:#e1e1e1;
+	font-size:40px;
+}
+#main{
+	width:640px;
+	height:480px;
+	margin:0 auto;
+	border:1px groove #444;
+	background:#444;
+}
 
 
 
