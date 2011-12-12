@@ -11,7 +11,7 @@ header{
 }
 header h1{
 	font-family: 'Ubuntu', sans-serif;
-	color:#e1e1e1;
+	color:#444;
 	font-size:40px;
 }
 #main{
@@ -20,7 +20,13 @@ header h1{
 	margin:0 auto;
 	border:1px groove #444;
 	background:#444;
+	padding: 0 1px 1px 0;
 }
+#stage{
+	overflow:visible;
+	padding: 0 1px 1px 0;
+}
+
 
 
 
