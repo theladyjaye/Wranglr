@@ -1,10 +1,9 @@
 var Wranglr = Wranglr || {};
 Wranglr.Application = function(controller){
 
-	var self = {}
+	var self = {};
 
 	function __new__(){
-	
 	}
 
 	function __init__(){

@@ -3,7 +3,6 @@ body{
 	padding:0;
 	background:#333;
 }
-
 header{
 	width:640px;
 	margin: 0 auto;
@@ -25,6 +24,15 @@ header h1{
 #stage{
 	overflow:visible;
 	padding: 0 1px 1px 0;
+}
+.guide{
+	cursor:pointer;
+}
+.guide.x.dragging{
+	cursor:n-resize;
+}
+.guide.y.dragging{
+	cursor:w-resize;
 }
 
 
