@@ -6,13 +6,14 @@ Wranglr.Application = function(controller){
 	var _stage = document.getElementById('stage');
 
 	function __new__(){
-		self.svg = function(){return _svg;}
+		self.svg   = function(){return _svg;}
 		self.stage = function(){return _stage;}
 	}
 
 	function __init__(){
 		Wranglr.currentApplication = self;
-		self.controller  = controller();
+		
+		self.controller = controller();
 	}
 	
 	__new__();

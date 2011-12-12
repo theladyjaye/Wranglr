@@ -31,31 +31,31 @@ var Wranglr = Wranglr || {};
 
 	function createGuides(){
 		var g = svg.group();
-		
 		var guide = Wranglr.Guide({
 			'orientation':'x',
 			'pos': 10
 		});
-
 		var guide2 = Wranglr.Guide({
 			'orientation':'x',
 			'pos': 100
 		});
-
 		var guide3 = Wranglr.Guide({
 			'orientation':'y',
 			'pos':10
 		});
-
 		var guide4 = Wranglr.Guide({
 			'orientation':'y',
 			'pos': 100
 		});
-
-		stage.appendChild(guide.view());
-		stage.appendChild(guide2.view());
-		stage.appendChild(guide3.view());
-		stage.appendChild(guide4.view());
+		
+		g.setAttribute('class', 'guides-group');
+		g.appendChild(guide.view());
+		g.appendChild(guide2.view());
+		g.appendChild(guide3.view());
+		g.appendChild(guide4.view());
+		
+		stage.appendChild(g);
+		return g;
 	}
 
 	function createGrid(){
@@ -66,7 +66,6 @@ var Wranglr = Wranglr || {};
 		var d;
 		var rect;
 
-		stage.appendChild(g);
 
 		for(var i=x; i>=0; i--){
 			d = i * 10;
@@ -92,6 +91,8 @@ var Wranglr = Wranglr || {};
 			g.appendChild(rect);
 		}
 
+		g.setAttribute('class', 'grid-group');
+		stage.appendChild(g);
 		return g;
 	}
 
@@ -119,24 +120,24 @@ Wranglr.Guide = function(spec, my){
     var my   = my || {};
     var self = {};
 
-    var orientation = spec.orientation || 'x';
-    var initPos    = spec.pos || 0;
-
-    var svg = Wranglr.currentApplication.svg();
+    // application objects
+    var svg   = Wranglr.currentApplication.svg();
     var stage = Wranglr.currentApplication.stage();
-    var _view;
+    
+    var orientation = spec.orientation || 'x';
+    var initPos     = spec.pos || 0;
 
-    var is_dragging = false;
+    var is_dragging  = false;
     var mouseOffsetX = 0;
     var mouseOffsetY = 0;
-    var thickness = 1; // px
-    var baseClass = 'guide ' + orientation;
+    var thickness    = 1; // px
+    var baseClass    = 'guide ' + orientation;
+    
+    var _view;
 
     function __new__(){
     	self.view = view;
-    	// self.x = x;
-    	// self.y = y;
-    	self.pos = pos;
+    	self.pos  = pos;
     }
     
     /* initialization */
@@ -146,6 +147,7 @@ Wranglr.Guide = function(spec, my){
     	initialzeView();    
     }
     function initialzeView(){
+    	var body   = document.getElementsByTagName('body')[0];
     	var width  = (orientation === 'x') ? '100%'    : thickness;
     	var height = (orientation === 'x') ? thickness : '100%'
 
@@ -156,12 +158,9 @@ Wranglr.Guide = function(spec, my){
     	});
 
     	_view.setAttribute('class', baseClass);
-
-    	// _view.addEventListener('mousemove', onMouseMove);
     	_view.addEventListener('mouseup', onMouseUp);
     	_view.addEventListener('mousedown', onMouseDown);
 
-    	var body = document.getElementsByTagName('body')[0];
     	body.addEventListener('mouseup', onMouseUp);
     	body.addEventListener('mousemove', onMouseMove);
 
@@ -173,31 +172,27 @@ Wranglr.Guide = function(spec, my){
     function view(){
     	return _view;
     }
+    function pos(val){
+    	if(orientation === 'x'){
+    		y(val);
+    	}else{
+    		x(val);
+    	}
+    }
+
+    /* private methods */
     function x(val){
     	if(val === undefined){
     		return _view.getAttribute('x');
     	}
 
     	_view.setAttribute('x', val);
-    	_x = val;
     }
     function y(val){
     	if(val === undefined){
     		return _view.getAttribute('y');
     	}
     	_view.setAttribute('y', val);
-    	_y = val;
-    }
-    // function pos(xval, yval){
-    function pos(val){
-    	// x(xval);
-    	// y(yval);
-    	
-    	if(orientation === 'x'){
-    		y(val);
-    	}else{
-    		x(val);
-    	}
     }
 
     /* event delegates */
@@ -207,6 +202,7 @@ Wranglr.Guide = function(spec, my){
 
     	if(_view && stage){
     		var point = svg.hit(stage, _view, e);
+    		
     		mouseOffsetX = point.x - parseInt(x(), 10);
     		mouseOffsetY = point.y - parseInt(y(), 10);
 
@@ -223,9 +219,7 @@ Wranglr.Guide = function(spec, my){
     function onMouseMove(e){
     	if(is_dragging){
     		if(_view){
-    			
     			var point = svg.hit(stage, _view, e);
-    			// y(point.y - mouseOffsetY);
     			
     			if(orientation === 'x'){
     				y(point.y - mouseOffsetY);
@@ -246,7 +240,7 @@ Wranglr.Guide = function(spec, my){
 
 /**
  * @namespace Wranglr.Svg
- * @description api for drawing svg
+ * @description util api for drawing svg
  * @param {object} spec Configuration object {}
  * @param {object} my   This is used to share secrets between objects; optional.
  * 
@@ -261,9 +255,9 @@ Wranglr.Svg = function(spec, my){
 	var SVG_XMLNS = 'http://www.w3.org/2000/svg';
 
     function __new__(){
-    	self.rect = rect;
+    	self.rect   = rect;
     	self.group = group;
-    	self.hit = hit;
+    	self.hit   = hit;
     }
     
     /* initialization */
@@ -293,20 +287,21 @@ Wranglr.Svg = function(spec, my){
 		return r;
 	}
 	function group(options){
-		options = options || {}; 
+		options            = options || {}; 
 		options.transform = options.transform || '';
 		
 		var g = document.createElementNS(SVG_XMLNS, 'g');
-		g.setAttributeNS(null, 'transform', options.transform);
+		g.setAttribute('transform', options.transform);
 
 		return g;
 	}
 	function hit(context, element, mouseEvent){
-		var point = context.createSVGPoint();
+		var point      = context.createSVGPoint();
 		var transform = element.getScreenCTM();
 
 		point.x = mouseEvent.clientX;
 		point.y = mouseEvent.clientY;
+		
 		point.matrixTransform(transform.inverse());
 
 		return point;
