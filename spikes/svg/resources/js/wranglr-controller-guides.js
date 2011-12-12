@@ -17,6 +17,13 @@ var Wranglr = Wranglr || {};
 	 var stage = document.getElementById('stage');
 	 var grid;
 	 var guides;
+
+
+	 var dragData = {
+	 	'startX':0,
+	 	'startY':0
+	 }
+	 var draggable;
 			
 	 function __new__(){
 	 	
@@ -26,18 +33,56 @@ var Wranglr = Wranglr || {};
 
 	 function __init__(){
 	     self.name = 'Wranglr.Guides';
+	     grid      = createGrid();
+	     guides    = createGuides();
 
-	     stage.addEventListener('click', onStageClick);
-	     grid   = createGrid();
-	     guides = createGuides();
+	     // testAddGuide();
+	     testDrag();
 
 	     // for debug
 	     Wranglr.stage = stage;
+	     Wranglr.draggable = draggable;
+	 }
+	 function testAddGuide(){
+	 	stage.addEventListener('click', addGuide);
+	 }
+	 function testDrag(){
+	 	draggable = get_rect({
+	 		'width': '250',
+	 		'height': '250',
+	 		'x':'0',
+	 		'y':'0'
+	 	});
+
+	 	draggable.addEventListener('mousedown', onRectMouseDown);
+	 	draggable.addEventListener('mouseup', onRectMouseUp);
+
+	 	stage.appendChild(draggable);
+	 }
+	 function onRectMouseDown(e){
+	 	console.log('down');
+
+	 	dragData.startX = e.offsetX;
+	 	dragData.startY = e.offsetY;
+	 	draggable.addEventListener('mousemove', onRectDrag);
 	 }
 
-	 function onStageClick(e){
-	 	console.log(e);
+	 function onRectDrag(e){
+	 	var x = e.offsetX - dragData.startX;
+	 	var y = e.offsetY - dragData.startY;
 
+	 	console.log(e.offsetX, e.offsetY);
+	 	console.log(x, y);
+	 	// return;
+	 	draggable.setAttributeNS(null, 'x', x);
+	 	draggable.setAttributeNS(null, 'y', y);
+	 }
+	 function onRectMouseUp(e){
+	 	console.log('up');
+	 	draggable.removeEventListener('mousemove', onRectDrag);
+	 }
+
+	 function addGuide(e){
 	 	guides.appendChild(get_rect({
 	 		'width':'100%',
 	 		'height':'1',
